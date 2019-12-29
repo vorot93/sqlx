@@ -1,8 +1,5 @@
-use async_std::io::{
-    prelude::{ReadExt, WriteExt},
-    Read, Write,
-};
 use std::io;
+use tokio::io::*;
 
 const RBUF_SIZE: usize = 8 * 1024;
 
@@ -23,7 +20,7 @@ pub struct BufStream<S> {
 
 impl<S> BufStream<S>
 where
-    S: Read + Write + Unpin,
+    S: AsyncRead + AsyncWrite + Unpin,
 {
     pub fn new(stream: S) -> Self {
         Self {

@@ -41,15 +41,9 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Cache target/
-      uses: actions/cache@v1
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-target-postgres-${{ hashFiles('**/Cargo.lock') }}
-
     # -----------------------------------------------------
 
-    - run: cargo test -p sqlx --no-default-features --features 'postgres macros uuid chrono'
+    - run: cargo test -p tokio-sqlx --no-default-features --features 'postgres macros uuid chrono'
       env:
         DATABASE_URL: postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
 

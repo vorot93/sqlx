@@ -6,8 +6,8 @@ use std::{
     time::{Duration, Instant},
 };
 
-use async_std::sync::Sender;
-use futures_util::future::FutureExt;
+use futures_intrusive::channel::shared::Sender;
+use tokio::task::LocalSet;
 
 use crate::Database;
 
@@ -97,11 +97,6 @@ where
         self.inner.size()
     }
 
-    /// Returns the number of idle connections.
-    pub fn idle(&self) -> usize {
-        self.inner.num_idle()
-    }
-
     /// Returns the configured maximum pool size.
     pub fn max_size(&self) -> u32 {
         self.inner.options().max_size
@@ -160,13 +155,10 @@ impl<DB: Database> DerefMut for Connection<DB> {
 impl<DB: Database> Drop for Connection<DB> {
     fn drop(&mut self) {
         if let Some(conn) = self.raw.take() {
-            self.pool_tx
-                .send(Idle {
-                    raw: conn,
-                    since: Instant::now(),
-                })
-                .now_or_never()
-                .expect("(bug) connection released into a full pool")
+            let _ = LocalSet::new().run_until(self.pool_tx.send(Idle {
+                raw: conn,
+                since: Instant::now(),
+            }));
         }
     }
 }

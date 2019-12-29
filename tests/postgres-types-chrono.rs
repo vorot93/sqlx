@@ -1,3 +1,5 @@
+extern crate tokio_sqlx as sqlx;
+
 use sqlx::types::chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use sqlx::{Connection, PgConnection, Row};
 
@@ -5,7 +7,7 @@ async fn connect() -> anyhow::Result<PgConnection> {
     Ok(PgConnection::open(dotenv::var("DATABASE_URL")?).await?)
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn postgres_chrono_date() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -22,7 +24,7 @@ async fn postgres_chrono_date() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn mysql_chrono_date_time() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -39,7 +41,7 @@ async fn mysql_chrono_date_time() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn postgres_chrono_time() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -56,7 +58,7 @@ async fn postgres_chrono_time() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn postgres_chrono_timestamp_tz() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 

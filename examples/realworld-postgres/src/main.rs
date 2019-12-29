@@ -10,7 +10,7 @@ const SECRET_KEY: &str = "this-is-the-most-secret-key-ever-secreted";
 //       To be clear, that is not recommended and this should be fixed as soon as Tide fixes its
 //       error handling.
 
-#[async_std::main]
+#[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let pool = PgPool::new(&env::var("DATABASE_URL")?).await?;
 
@@ -142,7 +142,7 @@ async fn authorize(token: &str) -> anyhow::Result<i64> {
     Ok(data.claims.sub)
 }
 
-// TODO: Does this need to be spawned in async-std ?
+// TODO: Does this need to be spawned in tokio ?
 fn hash_password(password: &str) -> anyhow::Result<String> {
     let salt = generate_random_salt();
     let hash = argon2::hash_encoded(password.as_bytes(), &salt, &argon2::Config::default())?;

@@ -5,14 +5,14 @@
 ///
 /// ```rust
 /// # #[cfg(feature = "mysql")]
-/// # #[async_std::main]
-/// # async fn main() -> sqlx::Result<()>{
+/// # #[tokio::main]
+/// # async fn main() -> tokio_sqlx::Result<()>{
 /// # let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
 /// #
 /// # if !(db_url.starts_with("mysql") || db_url.starts_with("mariadb")) { return Ok(()) }
-/// # let mut conn = sqlx::mysql::connect(db_url).await?;
-/// // let mut conn = <impl sqlx::Executor>;
-/// let account = sqlx::query!("select (1) as id, 'Herp Derpinson' as name")
+/// # let mut conn = tokio_sqlx::mysql::connect(db_url).await?;
+/// // let mut conn = <impl tokio_sqlx::Executor>;
+/// let account = tokio_sqlx::query!("select (1) as id, 'Herp Derpinson' as name")
 ///     .fetch_one(&mut conn)
 ///     .await?;
 ///
@@ -33,14 +33,14 @@
 ///
 /// ```rust
 /// # #[cfg(feature = "mysql")]
-/// # #[async_std::main]
-/// # async fn main() -> sqlx::Result<()>{
+/// # #[tokio::main]
+/// # async fn main() -> tokio_sqlx::Result<()>{
 /// # let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
 /// #
 /// # if !(db_url.starts_with("mysql") || db_url.starts_with("mariadb")) { return Ok(()) }
-/// # let mut conn = sqlx::mysql::connect(db_url).await?;
-/// // let mut conn = <impl sqlx::Executor>;
-/// let account = sqlx::query!(
+/// # let mut conn = tokio_sqlx::mysql::connect(db_url).await?;
+/// // let mut conn = <impl tokio_sqlx::Executor>;
+/// let account = tokio_sqlx::query!(
 ///         // just pretend "accounts" is a real table
 ///         "select * from (select (1) as id, 'Herp Derpinson' as name) accounts where id = ?",
 ///         1i32
@@ -119,14 +119,14 @@ macro_rules! query (
 /// `src/my_query.rs`:
 /// ```rust
 /// # #[cfg(feature = "mysql")]
-/// # #[async_std::main]
-/// # async fn main() -> sqlx::Result<()>{
+/// # #[tokio::main]
+/// # async fn main() -> tokio_sqlx::Result<()>{
 /// # let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
 /// #
 /// # if !(db_url.starts_with("mysql") || db_url.starts_with("mariadb")) { return Ok(()) }
-/// # let mut conn = sqlx::mysql::connect(db_url).await?;
-/// // let mut conn = <impl sqlx::Executor>;
-/// let account = sqlx::query_file!("examples/queries/account-by-id.sql", 1i32)
+/// # let mut conn = tokio_sqlx::mysql::connect(db_url).await?;
+/// // let mut conn = <impl tokio_sqlx::Executor>;
+/// let account = tokio_sqlx::query_file!("examples/queries/account-by-id.sql", 1i32)
 ///     .fetch_one(&mut conn)
 ///     .await?;
 ///
@@ -167,20 +167,20 @@ macro_rules! query_file (
 /// The only modification to the syntax is that the struct name is given before the SQL string:
 /// ```rust
 /// # #[cfg(feature = "mysql")]
-/// # #[async_std::main]
-/// # async fn main() -> sqlx::Result<()>{
+/// # #[tokio::main]
+/// # async fn main() -> tokio_sqlx::Result<()>{
 /// # let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
 /// #
 /// # if !(db_url.starts_with("mysql") || db_url.starts_with("mariadb")) { return Ok(()) }
-/// # let mut conn = sqlx::mysql::connect(db_url).await?;
+/// # let mut conn = tokio_sqlx::mysql::connect(db_url).await?;
 /// #[derive(Debug)]
 /// struct Account {
 ///     id: i32,
 ///     name: String
 /// }
 ///
-/// // let mut conn = <impl sqlx::Executor>;
-/// let account = sqlx::query_as!(
+/// // let mut conn = <impl tokio_sqlx::Executor>;
+/// let account = tokio_sqlx::query_as!(
 ///         Account,
 ///         "select * from (select (1) as id, 'Herp Derpinson' as name) accounts where id = ?",
 ///         1i32
@@ -214,20 +214,20 @@ macro_rules! query_as (
 ///
 /// ```rust
 /// # #[cfg(feature = "mysql")]
-/// # #[async_std::main]
-/// # async fn main() -> sqlx::Result<()>{
+/// # #[tokio::main]
+/// # async fn main() -> tokio_sqlx::Result<()>{
 /// # let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
 /// #
 /// # if !(db_url.starts_with("mysql") || db_url.starts_with("mariadb")) { return Ok(()) }
-/// # let mut conn = sqlx::mysql::connect(db_url).await?;
+/// # let mut conn = tokio_sqlx::mysql::connect(db_url).await?;
 /// #[derive(Debug)]
 /// struct Account {
 ///     id: i32,
 ///     name: String
 /// }
 ///
-/// // let mut conn = <impl sqlx::Executor>;
-/// let account = sqlx::query_file_as!(Account, "examples/queries/account-by-id.sql", 1i32)
+/// // let mut conn = <impl tokio_sqlx::Executor>;
+/// let account = tokio_sqlx::query_file_as!(Account, "examples/queries/account-by-id.sql", 1i32)
 ///     .fetch_one(&mut conn)
 ///     .await?;
 ///

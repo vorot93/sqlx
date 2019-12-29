@@ -1,4 +1,4 @@
-use sqlx::Database;
+use tokio_sqlx::Database;
 
 #[derive(PartialEq, Eq)]
 #[allow(dead_code)]
@@ -32,7 +32,7 @@ macro_rules! impl_database_ext {
                     $(
                         // `if` statements cannot have attributes but these can
                         $(#[$meta])?
-                        _ if <$database as sqlx::types::HasSqlType<$ty>>::metadata().eq(id) => Some(input_ty!($ty $(, $input)?)),
+                        _ if <$database as tokio_sqlx::types::HasSqlType<$ty>>::metadata().eq(id) => Some(input_ty!($ty $(, $input)?)),
                     )*
                     _ => None
                 }
@@ -42,7 +42,7 @@ macro_rules! impl_database_ext {
                 match () {
                     $(
                         $(#[$meta])?
-                        _ if <$database as sqlx::types::HasSqlType<$ty>>::metadata().eq(id) => return Some(stringify!($ty)),
+                        _ if <$database as tokio_sqlx::types::HasSqlType<$ty>>::metadata().eq(id) => return Some(stringify!($ty)),
                     )*
                     _ => None
                 }

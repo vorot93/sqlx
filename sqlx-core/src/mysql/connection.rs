@@ -1,10 +1,11 @@
 use std::convert::TryInto;
 use std::io;
+use std::net::Shutdown;
 
-use async_std::net::{Shutdown, TcpStream};
 use byteorder::{ByteOrder, LittleEndian};
 use futures_core::future::BoxFuture;
 use sha1::Sha1;
+use tokio::net::TcpStream;
 
 use crate::cache::StatementCache;
 use crate::connection::Connection;

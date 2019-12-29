@@ -12,8 +12,6 @@ use quote::quote;
 
 use syn::parse_macro_input;
 
-use async_std::task;
-
 use url::Url;
 
 type Error = Box<dyn std::error::Error>;
@@ -28,15 +26,15 @@ use query_macros::*;
 
 macro_rules! async_macro (
     ($db:ident => $expr:expr) => {{
-        let res: Result<proc_macro2::TokenStream> = task::block_on(async {
-            use sqlx::Connection;
+        let res: Result<proc_macro2::TokenStream> = tokio::runtime::Runtime::new().unwrap().block_on(async {
+            use tokio_sqlx::Connection;
 
             let db_url = Url::parse(&dotenv::var("DATABASE_URL").map_err(|_| "DATABASE_URL not set")?)?;
 
             match db_url.scheme() {
                 #[cfg(feature = "postgres")]
                 "postgresql" | "postgres" => {
-                    let $db = sqlx::postgres::PgConnection::open(db_url.as_str())
+                    let $db = tokio_sqlx::postgres::PgConnection::open(db_url.as_str())
                         .await
                         .map_err(|e| format!("failed to connect to database: {}", e))?;
 
@@ -50,7 +48,7 @@ macro_rules! async_macro (
                 ).into()),
                 #[cfg(feature = "mysql")]
                 "mysql" | "mariadb" => {
-                    let $db = sqlx::mysql::MySqlConnection::open(db_url.as_str())
+                    let $db = tokio_sqlx::mysql::MySqlConnection::open(db_url.as_str())
                             .await
                             .map_err(|e| format!("failed to connect to database: {}", e))?;
 

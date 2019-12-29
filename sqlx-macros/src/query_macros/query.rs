@@ -5,7 +5,7 @@ use proc_macro2::TokenStream;
 use syn::{Ident, Path};
 
 use quote::quote;
-use sqlx::{types::HasTypeMetadata, Connection};
+use tokio_sqlx::{types::HasTypeMetadata, Connection};
 
 use super::{args, output, QueryMacroInput};
 use crate::database::DatabaseExt;
@@ -28,7 +28,7 @@ where
     if describe.result_columns.is_empty() {
         return Ok(quote! {{
             #args
-            sqlx::query_as_mapped(#sql, |_| Ok(())).bind_all(args)
+            tokio_sqlx::query_as_mapped(#sql, |_| Ok(())).bind_all(args)
         }});
     }
 

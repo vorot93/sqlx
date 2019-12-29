@@ -3,7 +3,7 @@ use quote::{quote, quote_spanned, ToTokens};
 use syn::spanned::Spanned;
 use syn::Expr;
 
-use sqlx::describe::Describe;
+use tokio_sqlx::describe::Describe;
 
 use crate::database::{DatabaseExt, ParamChecking};
 use crate::query_macros::QueryMacroInput;
@@ -40,8 +40,8 @@ pub fn quote_args<DB: DatabaseExt>(
             // required or `quote!()` emits it as `Nusize`
             let i = syn::Index::from(i);
             quote_spanned!( expr.span() => {
-                use sqlx::ty_cons::TyConsExt as _;
-                sqlx::ty_cons::TyCons::new(&args.#i).ty_cons()
+                use tokio_sqlx::ty_cons::TyConsExt as _;
+                tokio_sqlx::ty_cons::TyCons::new(&args.#i).ty_cons()
             })
         });
 

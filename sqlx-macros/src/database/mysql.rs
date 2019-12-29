@@ -1,5 +1,5 @@
 impl_database_ext! {
-    sqlx::MySql {
+    tokio_sqlx::MySql {
         bool,
         String,
         i16,

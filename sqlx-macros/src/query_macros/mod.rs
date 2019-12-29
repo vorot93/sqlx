@@ -8,8 +8,8 @@ pub use query::expand_query;
 
 use crate::database::DatabaseExt;
 
-use sqlx::types::HasTypeMetadata;
-use sqlx::Connection;
+use tokio_sqlx::types::HasTypeMetadata;
+use tokio_sqlx::Connection;
 
 mod args;
 mod input;

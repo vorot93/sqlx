@@ -1,8 +1,9 @@
 use std::convert::TryInto;
+use std::net::Shutdown;
 
-use async_std::net::{Shutdown, TcpStream};
 use byteorder::NetworkEndian;
 use futures_core::future::BoxFuture;
+use tokio::net::TcpStream;
 
 use crate::cache::StatementCache;
 use crate::connection::Connection;

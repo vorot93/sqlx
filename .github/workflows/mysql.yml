@@ -40,15 +40,9 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Cache target/
-      uses: actions/cache@v1
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-target-mysql-${{ hashFiles('**/Cargo.lock') }}
-
     # -----------------------------------------------------
 
-    - run: cargo test -p sqlx --no-default-features --features 'mysql macros chrono'
+    - run: cargo test -p tokio-sqlx --no-default-features --features 'mysql macros chrono'
       env:
         DATABASE_URL: mysql://root:password@localhost:${{ job.services.mysql.ports[3306] }}/sqlx
 

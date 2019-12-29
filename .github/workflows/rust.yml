@@ -24,17 +24,11 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Cache target/
-      uses: actions/cache@v1
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
     # -----------------------------------------------------
 
     - run: cargo check --all-features
 
-    - run: cargo test -p sqlx-core --all-features
+    - run: cargo test -p tokio-sqlx-core --all-features
 
     # Rust ------------------------------------------------
 

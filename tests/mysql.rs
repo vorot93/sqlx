@@ -1,7 +1,9 @@
+extern crate tokio_sqlx as sqlx;
+
 use futures::TryStreamExt;
 use sqlx::{mysql::MySqlConnection, Connection as _, Executor as _, Row as _};
 
-#[async_std::test]
+#[tokio::test]
 async fn it_connects() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -14,7 +16,7 @@ async fn it_connects() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn it_executes() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -49,7 +51,7 @@ CREATE TEMPORARY TABLE users (id INTEGER PRIMARY KEY)
 }
 
 #[cfg(feature = "macros")]
-#[async_std::test]
+#[tokio::test]
 async fn macro_select_from_cte() -> anyhow::Result<()> {
     let mut conn = connect().await?;
     let account = sqlx::query!(

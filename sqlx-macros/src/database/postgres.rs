@@ -1,5 +1,5 @@
 impl_database_ext! {
-    sqlx::Postgres {
+    tokio_sqlx::Postgres {
         bool,
         String,
         i16,
@@ -9,19 +9,19 @@ impl_database_ext! {
         f64,
 
         #[cfg(feature = "uuid")]
-        sqlx::types::Uuid,
+        tokio_sqlx::types::Uuid,
 
         #[cfg(feature = "chrono")]
-        sqlx::types::chrono::NaiveTime,
+        tokio_sqlx::types::chrono::NaiveTime,
 
         #[cfg(feature = "chrono")]
-        sqlx::types::chrono::NaiveDate,
+        tokio_sqlx::types::chrono::NaiveDate,
 
         #[cfg(feature = "chrono")]
-        sqlx::types::chrono::NaiveDateTime,
+        tokio_sqlx::types::chrono::NaiveDateTime,
 
         #[cfg(feature = "chrono")]
-        sqlx::types::chrono::DateTime<sqlx::types::chrono::Utc> | sqlx::types::chrono::DateTime<_>,
+        tokio_sqlx::types::chrono::DateTime<tokio_sqlx::types::chrono::Utc> | tokio_sqlx::types::chrono::DateTime<_>,
     },
     ParamChecking::Strong
 }

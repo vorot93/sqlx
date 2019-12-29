@@ -1,6 +1,8 @@
 # Built artifacts
 target/
 
+Cargo.lock
+
 # Project and editor files
 .vscode/
 .idea/

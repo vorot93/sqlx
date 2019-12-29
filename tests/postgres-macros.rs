@@ -1,4 +1,6 @@
-#[async_std::test]
+extern crate tokio_sqlx as sqlx;
+
+#[tokio::test]
 async fn test_query() -> sqlx::Result<()> {
     let mut conn = sqlx::postgres::connect(&dotenv::var("DATABASE_URL").unwrap()).await?;
 
@@ -14,7 +16,7 @@ async fn test_query() -> sqlx::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_query_file() -> sqlx::Result<()> {
     let mut conn = sqlx::postgres::connect(&dotenv::var("DATABASE_URL").unwrap()).await?;
 
@@ -33,7 +35,7 @@ struct Account {
     name: Option<String>,
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_query_as() -> sqlx::Result<()> {
     let mut conn = sqlx::postgres::connect(&dotenv::var("DATABASE_URL").unwrap()).await?;
 
@@ -51,7 +53,7 @@ async fn test_query_as() -> sqlx::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_query_file_as() -> sqlx::Result<()> {
     let mut conn = sqlx::postgres::connect(&dotenv::var("DATABASE_URL").unwrap()).await?;
 
@@ -64,7 +66,7 @@ async fn test_query_file_as() -> sqlx::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn query_by_string() -> sqlx::Result<()> {
     let mut conn = sqlx::postgres::connect(&dotenv::var("DATABASE_URL").unwrap()).await?;
 
@@ -84,7 +86,7 @@ async fn query_by_string() -> sqlx::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_nullable_err() -> sqlx::Result<()> {
     #[derive(Debug)]
     struct Account {

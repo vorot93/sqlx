@@ -7,12 +7,12 @@ members = [
 ]
 
 [package]
-name = "sqlx"
-version = "0.1.3"
+name = "tokio-sqlx"
+version = "0.1.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/launchbadge/sqlx"
-documentation = "https://docs.rs/sqlx"
+repository = "https://github.com/vorot93/tokio-sqlx"
+documentation = "https://docs.rs/tokio-sqlx"
 description = "🧰 The Rust SQL Toolkit."
 edition = "2018"
 keywords = [ "database", "sql", "async", "await" ]
@@ -22,6 +22,7 @@ authors = [
     "Austin Bonander <austin.bonander@gmail.com>", # austin@launchbadge.com
     "Zachery Gyurkovitz <zgyurkovitz@gmail.com>", # zach@launchbadge.com
     "Daniel Akhterov <akhterovd@gmail.com>", # daniel@launchbadge.com
+    "Artem Vorotnikov <artem@vorotnikov.me>"
 ]
 
 [features]
@@ -37,15 +38,16 @@ chrono = [ "sqlx-core/chrono", "sqlx-macros/chrono" ]
 uuid = [ "sqlx-core/uuid", "sqlx-macros/uuid" ]
 
 [dependencies]
-sqlx-core = { version = "=0.1.3", path = "sqlx-core" }
-sqlx-macros = { version = "0.1.1", path = "sqlx-macros", optional = true }
+futures-intrusive = "*"
+sqlx-core = { package = "tokio-sqlx-core", version = "=0.1.0", path = "sqlx-core" }
+sqlx-macros = { package = "tokio-sqlx-macros", version = "0.1.0", path = "sqlx-macros", optional = true }
 proc-macro-hack = { version = "0.5.11", optional = true }
 
 [dev-dependencies]
 anyhow = "1.0.26"
 futures = "0.3.1"
-async-std = { version = "1.4.0", features = [ "attributes" ] }
 dotenv = "0.15.0"
+tokio = { version = "0.2.8", features = ["full"] }
 
 [package.metadata.docs.rs]
 all-features = true

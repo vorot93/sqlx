@@ -1,14 +1,14 @@
 use std::env;
 
-use async_std::fs;
 use proc_macro2::Span;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::Token;
 use syn::{Expr, ExprLit, ExprPath, Lit};
+use tokio::fs;
 
-use sqlx::describe::Describe;
-use sqlx::Connection;
+use tokio_sqlx::describe::Describe;
+use tokio_sqlx::Connection;
 
 /// Macro input shared by `query!()` and `query_file!()`
 pub struct QueryMacroInput {

@@ -7,12 +7,9 @@ use std::{
     time::Instant,
 };
 
-use async_std::{
-    future::timeout,
-    sync::{channel, Receiver, Sender},
-    task,
-};
+use futures_intrusive::channel::shared::{channel, Receiver, Sender};
 use futures_util::future::FutureExt;
+use tokio::{task, time::timeout};
 
 use crate::{error::Error, Connection, Database};
 
@@ -53,7 +50,7 @@ where
                 .new_conn(Instant::now() + pool.options.connect_timeout)
                 .await?;
 
-            pool_tx
+            let _ = pool_tx
                 .send(Idle {
                     raw,
                     since: Instant::now(),
@@ -74,10 +71,6 @@ where
         self.size.load(Ordering::Acquire)
     }
 
-    pub(super) fn num_idle(&self) -> usize {
-        self.pool_rx.len()
-    }
-
     pub(super) async fn close(&self) {
         self.closed.store(true, Ordering::Release);
 
@@ -85,7 +78,7 @@ where
             // don't block on the receiver because we own one Sender so it should never return
             // `None`; a `select!()` would also work but that produces more complicated code
             // and a timeout isn't necessarily appropriate
-            match self.pool_rx.recv().now_or_never() {
+            match self.pool_rx.receive().now_or_never() {
                 Some(Some(idle)) => {
                     idle.close().await;
                     self.size.fetch_sub(1, Ordering::AcqRel);
@@ -105,7 +98,7 @@ where
             return None;
         }
 
-        Some(self.pool_rx.recv().now_or_never()??.raw)
+        Some(self.pool_rx.receive().now_or_never()??.raw)
     }
 
     pub(super) async fn acquire(&self) -> crate::Result<Raw<DB>> {
@@ -129,7 +122,7 @@ where
                     .ok_or(Error::PoolTimedOut)?;
 
                 // don't sleep forever
-                let mut idle = match timeout(max_wait, self.pool_rx.recv()).await {
+                let mut idle = match timeout(max_wait, self.pool_rx.receive()).await {
                     Ok(Some(idle)) => idle,
                     Ok(None) => panic!("this isn't possible, we own a `pool_tx`"),
                     // try our acquire logic again
@@ -241,12 +234,12 @@ where
             // collect connections to reap
             let (reap, keep) = (0..max_reaped)
                 // only connections waiting in the queue
-                .filter_map(|_| pool.pool_rx.recv().now_or_never()?)
+                .filter_map(|_| pool.pool_rx.receive().now_or_never()?)
                 .partition::<Vec<_>, _>(|conn| should_reap(conn, &pool.options));
 
             for conn in keep {
                 // return these connections to the pool first
-                pool_tx.send(conn).await;
+                let _ = pool_tx.send(conn).await;
             }
 
             for conn in reap {
@@ -254,7 +247,7 @@ where
                 pool.size.fetch_sub(1, Ordering::AcqRel);
             }
 
-            task::sleep(period).await;
+            tokio::time::delay_for(period).await;
         }
     });
 }

@@ -1,7 +1,9 @@
+extern crate tokio_sqlx as sqlx;
+
 use futures::TryStreamExt;
 use sqlx::{postgres::PgConnection, Connection as _, Executor as _, Row as _};
 
-#[async_std::test]
+#[tokio::test]
 async fn it_connects() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -14,7 +16,7 @@ async fn it_connects() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn it_connects_to_database_user() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -38,7 +40,7 @@ async fn it_connects_to_database_user() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn it_executes() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
@@ -72,7 +74,7 @@ CREATE TEMPORARY TABLE users (id INTEGER PRIMARY KEY);
     Ok(())
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn it_remains_stable_issue_30() -> anyhow::Result<()> {
     let mut conn = connect().await?;
 
